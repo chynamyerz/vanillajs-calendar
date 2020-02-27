@@ -1,0 +1,39 @@
+.calendar-section {
+  text-align: center;
+}
+
+.calendar-container {
+  display: inline-block;
+  border: 1em solid aquamarine;
+  padding: 1em;
+  margin: 2em;
+}
+
+.calendar-heading {
+  font-style: italic;
+  color: cornflowerblue;
+  font-size: 3em;
+}
+
+.calendar-day {
+  text-align: left;
+  padding: 0px;
+  margin: 0px;
+  color: chartreuse;
+}
+
+.calendar-year-month {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.calendar-control-buttons {
+  width: 100%;
+}
+
+.calender-next-prev-buttons {
+  margin-bottom: 1em;
+}
+
+.calendar-table-body #date {
+  cursor: pointer;
+}

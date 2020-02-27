@@ -74,10 +74,16 @@ class Calendar {
 
     // Table body element
     let calendarTableBody = document.getElementById("calendar-table-body");
-    // Table Year / Month container element
-    let calendarYearMonth = document.getElementById("calendar-year-month");
+    // Clearing the table body
+    calendarTableBody.innerHTML = ""
+    // By default the first date of the month is selected
+    let day = this.selectedDay(1)
+    document.getElementById("calendar-year-month").innerHTML = `${this.getYear()} / ${this.getMonth()} / ${day.dayDate}`;
+    document.getElementById("calendar-day").innerHTML = day.day
 
-    calendarYearMonth.innerHTML = `${this.getYear()} / ${this.getMonth()}`;
+    // By default the current year and month is selected
+    document.getElementById("month").value = this.getMonth()
+    document.getElementById("year").value = this.getYear()
 
     // Table row element
     let calendarTableRow = document.createElement("tr");
@@ -92,19 +98,43 @@ class Calendar {
       if (j == 0 && this.getDays()[0].day != "Sun") {
         for (let i = 0; i < emptyDaysPrior; i++) {
           calendarTableRowCell = document.createElement("td");
+          calendarTableRowCell.setAttribute("id", "empty")
           calendarTableRowCell.appendChild(document.createTextNode("_"));
           calendarTableRow.appendChild(calendarTableRowCell);
         }
-        calendarTableRowCell = document.createElement("td");
       } 
-      if (this.getDays()[j].day == "Sun") {
+      if (j == 0) {
+        calendarTableRowCell = document.createElement("td");
+
+        // Load the cell content
+        calendarTableRowCell.appendChild(document.createTextNode(this.getDays()[j].dayDate));
+        calendarTableRowCell.setAttribute("id", "date");
+        calendarTableRowCell.onclick = (e) => {
+          let day = this.selectedDay(parseInt(e.target.textContent))
+          document.getElementById("calendar-year-month").innerHTML = `${this.getYear()} / ${this.getMonth()} / ${day.dayDate}`;
+          document.getElementById("calendar-day").innerHTML = day.day
+        }
+      }
+      else if (j !== 0 && this.getDays()[j].day == "Sun") {
         // Begin each new week on the new table row
         calendarTableRow = document.createElement("tr");
         // Load the cell content
         calendarTableRowCell.appendChild(document.createTextNode(this.getDays()[j].dayDate));
+        calendarTableRowCell.setAttribute("id", "date");
+        calendarTableRowCell.onclick = (e) => {
+          let day = this.selectedDay(parseInt(e.target.textContent))
+          document.getElementById("calendar-year-month").innerHTML = `${this.getYear()} / ${this.getMonth()} / ${day.dayDate}`;
+          document.getElementById("calendar-day").innerHTML = day.day
+        }
       } else {
         // Load the cell content
         calendarTableRowCell.appendChild(document.createTextNode(this.getDays()[j].dayDate));
+        calendarTableRowCell.setAttribute("id", "date");
+        calendarTableRowCell.onclick = (e) => {
+          let day = this.selectedDay(parseInt(e.target.textContent))
+          document.getElementById("calendar-year-month").innerHTML = `${this.getYear()} / ${this.getMonth()} / ${day.dayDate}`;
+          document.getElementById("calendar-day").innerHTML = day.day
+        }
       }
       // Load the row content and table content
       calendarTableRow.appendChild(calendarTableRowCell);
@@ -156,41 +186,56 @@ class Calendar {
     return days;
   }
 
+  selectedDay(date) {
+    /**
+     * A function for retrieving the selected day
+     */
+    return this.getDays().find((day) => day.dayDate == date);
+  }
+
   getNumberOfMonthDays() {
     /**
      * A function to get the number of days in a month
      */
-    let monthDays = 30;
     if (this.getMonth() == "Feb") {
       if (this.getYear() % 4 == 0) {
-        monthDays = 29;
+        return 29;
       } else {
-        monthDays = 28;
+        return 28;
       }
-    } else if (YEAR_MONTHS.indexOf(this.getMonth()) == 11 || YEAR_MONTHS.indexOf(this.getMonth()) % 2 == 0) {
-      monthDays =  31;
+    } else if (["Jan", "Mar", "May", "Jul", "Aug", "Oct", "Dec"].includes(this.getMonth())) {
+      return  31;
+    } else {
+      return 30;
     }
-    return monthDays;
   }
 }
 
 // Creating a calendar with default values
-let calendar = new Calendar()
-
-// Executing next and previous functions
-console.log(calendar.getNumberOfMonthDays(), calendar.getMonth(), calendar.getYear())
-console.log(calendar.getDays())
-calendar.nextYearMonth()
-console.log("****************************Next Month********************************")
-console.log(calendar.getNumberOfMonthDays(), calendar.getMonth(), calendar.getYear())
-console.log(calendar.getDays())
-calendar.previousYearMonth()
-console.log("*************************Previous Month*******************************")
-console.log(calendar.getNumberOfMonthDays(), calendar.getMonth(), calendar.getYear())
-console.log(calendar.getDays())
-calendar.previousYearMonth()
-console.log("*************************Previous Month*******************************")
-console.log(calendar.getNumberOfMonthDays(), calendar.getMonth(), calendar.getYear())
-console.log(calendar.getDays())
-
+var calendar = new Calendar()
 calendar.displayCalendar()
+
+// A function that triggers moving to the next month
+function next() {
+  calendar.nextYearMonth();
+  calendar.displayCalendar()
+}
+
+// A function that triggers moving to the previous month
+function previous() {
+  calendar.previousYearMonth()
+  calendar.displayCalendar()
+}
+
+// A function for changing the month
+function goToMonth(month) {
+  calendar.setMonth(month)
+  calendar.displayCalendar()
+}
+
+// A function for changing the year
+function goToYear(year) {
+  calendar.setYear(parseInt(year))
+  calendar.displayCalendar()
+}
+
